@@ -1,0 +1,114 @@
+/*
+ * Copyright 2016 Johannes Donath <johannesd@torchmind.com>
+ * and other copyright owners as documented in the project's IP log.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+buildscript {
+    repositories {
+        jcenter()
+
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = "0.1.0"
+group = "rocks.spud.mc" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "discord"
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+minecraft {
+    version = "1.10.2-12.18.1.2066"
+    runDir = "run"
+    mappings = "snapshot_20160518"
+}
+
+shadowJar {
+    classifier = 'shadow'
+
+    relocate 'com.iwebpp', 'rocks.spud.com.iwebpp'
+    relocate 'com.mashape', 'rocks.spud.com.mashape'
+    relocate 'com.neovisionaries', 'rocks.spud.com.neovisionaries'
+    relocate 'com.sun.jna', 'rocks.spud.com.sun.jna'
+
+    relocate 'javax.sound', 'rocks.spud.javax.sound'
+
+    relocate 'javazoom.jl', 'rocks.spud.javazoom.jl';
+    relocate 'javazoom.spi', 'rocks.spud.javazoom.spi';
+
+    relocate 'junit', 'rocks.spud.junit';
+
+    relocate 'net.dv8tion', 'rocks.spud.net.dv8tion';
+    relocate 'net.sourceforge.jaad', 'rocks.spud.net.sourceforge.jaad';
+
+    relocate 'org.apache.commons', 'rocks.spud.org.apache.commons';
+    relocate 'org.apache.http', 'rocks.spud.org.apache.http';
+    relocate 'org.json', 'rocks.spud.org.json';
+    relocate 'org.kc7bfi', 'rocks.spud.org.kc7bfi';
+    relocate 'org.tritonus', 'rocks.spud.org.tritonus';
+
+    relocate 'tomp2p', 'rocks.spud.tomp2p'
+
+    configurations = [project.configurations.compile]
+}
+
+reobf {
+    shadowJar {
+        mappingType = "SEARGE"
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'net.dv8tion:JDA:2.2.1_353'
+}
+
+processResources  {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

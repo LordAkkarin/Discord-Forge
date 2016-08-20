@@ -1,0 +1,22 @@
+{
+  "modListVersion": 2,
+  "modList":        [
+    {
+      "modid":                    "discord",
+      "name":                     "Discord Integration",
+      "description":              "Provides a bridge between Minecraft and Discord",
+      "version":                  "0.1.0",
+      "mcversion":                "1.10.2",
+      "url":                      "https://github.com/LordAkkarin/Discord-Forge",
+      "updateUrl":                "",
+      "authorList":               [
+        "Akkarin"
+      ],
+      "credits":                  "Authored by Akkarin, includes JDA",
+      "requiredMods":             [
+        "Forge"
+      ],
+      "useDependencyInformation": true
+    }
+  ]
+}
